@@ -1,20 +1,19 @@
 % Starts the chatbot (type "start." in prolog)
 start :-
+    % Can delete tbh, I was just testing stuff here
     format('Welcome! What\'s your name?~n'),
-    read(Name),
-    format('Hi, ~w!', [Name]), nl, nl,
+    read(Name), nl,
+    format('Hi, ~w!', [Name]), nl,
 
-    % Ask for general symptoms
-    write('We will begin by asking you about some general symptoms'), nl,
-    diagnose_symptom_type(general), nl,
+    % Ask general symptoms + specific chief complaint
+    write('We will begin by asking you about some general symptoms'), nl, nl,
+    ask_general_symptom, nl,
+    ask_specific_symptom_type,
 
-    % Then asakl for the main specific symptom (Chief Complaint)
-    ask_specific_symptom_type, nl,
-
-    % Diagnosis based on HPI
+    % Diagnosis based on current symptoms (HPI)
     hpi(HPI),
     (
-        % If not enough info on the symptoms, end
+        % If not enough info on the symptoms (if the user has no symptoms, or only common sympytoms), end
         (HPI = []; HPI = [common_symptoms]) -> write('Unfortunately we don\'t have enough information to make an accurate diagnosis, we recommend moving to a larger facility to run some tests'), nl;
 
         % Else, move to more specific diagnosis
@@ -24,61 +23,64 @@ start :-
         end
     ).
 
-% Asks the user for the main symptom type/ chief complaints
+% Ask the user for presence of common symptoms
+ask_general_symptom :-
+    forall(symptom(general, Symptom), ask_symptom(Symptom)).
+
+% Asks the user for the main symptom type/ chief complaint type
 ask_specific_symptom_type :-
     write('What is the main specific type of symptom you are experiencing?'), nl,
-    write('- [skin]                 Affecting the Skin'), nl,
-    write('- [heent]                Affecting the Head, Eyes, Ears, Nose, and Throat (HEENT)'), nl,
-    write('- [pulmonary]            Affecting the Lungs'), nl,
-    write('- [gastrointestinal]     Affecting the Gastrointestinal System'), nl,
-    write('- [others]               Other symptoms'), nl,
-    write('- [none]                 No more symptoms'), nl,
+    write('- [skin] \tAffecting the Skin'), nl,
+    write('- [heent] \tAffecting the Head, Eyes, Ears, Nose, and Throat (HEENT)'), nl,
+    write('- [pulmonary] \tAffecting the Lungs'), nl,
+    write('- [gastrointestinal] \tAffecting the Gastrointestinal System'), nl,
+    write('- [others] \tOther symptoms'), nl,
+    write('- [none] \tNo more symptoms'), nl,
     read(SymptomType), nl,
     (
-        SymptomType = none -> write('');
-        SymptomType = general -> write('Please enter a more specific symptom type'), nl, ask_specific_symptom_type;
-        diagnose_symptom_type(SymptomType)
+        SymptomType = none -> write('');  % If none, do nothing
+        SymptomType = general -> write('Please enter a more specific symptom type'), nl, ask_specific_symptom_type; % If general, ask again
+        ask_specific_symptom(SymptomType)
     ).
 
-% Diagnose the main symptom type the user entered
-diagnose_symptom_type(SymptomType) :-
+% Ask the user for the chief complaint based on the symptom type
+ask_specific_symptom(SymptomType) :-
     (
-        % If the symptom type is valid
-        type(SymptomType) -> forall(symptom(SymptomType, Symptom), ask_symptom(Symptom)); % Ask about symptoms for all symptoms in that type
+        % If SymptomType is not a valid symptom type, ask again
+        not(type(SymptomType)) -> write('Not sure what this means, please type it again'), nl, ask_specific_symptom_type;
 
-        %Else
-        write('Not sure what this means, please type it again'), nl, ask_specific_symptom_type
-    ).
-
-% Asks the user if they are experiencing a certain symptom for a certain disease
-ask_symptom_disease(Disease) :-
-    disease(Disease, Symptoms),
-    hpi(HPI),
-    not_hpi(NHPI),
-    write('Checking for remaining symptoms of: '), write(Disease), nl,
-    forall((member(Symptom, Symptoms), not(member(Symptom, HPI)), not(member(Symptom, NHPI))), ask_symptom(Symptom)).
-
-% Asks the user if they are experiencing a certain symptom
-ask_symptom(Symptom) :-
-    (
-        % If we are diagnosing common_symptoms
-        Symptom = common_symptoms -> diagnose_symptom_type(general);
-
-        % Else
-        question(Symptom),
-        write('(y/n)'), nl,
-        read(Answer),
+        % Else ask the symptoms
+        write('Please enter the symptom you are experiencing'), nl,
+        forall(symptom(SymptomType, Symptom), (format('[~w] \t', [Symptom]), desc(Symptom), nl)),
+        read(Symptom),
         (
-            Answer = y -> log_symptom(Symptom);
-            Answer = n -> log_no_symptom(Symptom);
-            write('Not sure what this means, please type it again'), nl, ask_symptom(Symptom)
+            % If the symptom entered is valid, log into HPI
+            symptom(SymptomType, Symptom) -> log_symptom(Symptom), nl;
+
+            % Else, ask again
+            write('Not sure what this means, please type it again'), nl, ask_specific_symptom(SymptomType)
         )
     ).
 
-% Ask symptoms of possible diseases
+% Asks the user if they are experiencing a certain symptom
+ask_symptom(Symptom) :-
+    write('Are you experiencing '), desc(Symptom), write('? (y/n)'), nl,
+    read(Answer),
+    (
+        Answer = y -> log_symptom(Symptom);
+        Answer = n -> log_no_symptom(Symptom);
+        write('Not sure what this means, please type it again'), nl, ask_symptom(Symptom)
+    ).
+
+% Check for remaining unasked symptoms of possible diseases
 initial_diagnose_disease :-
-    hpi(HPI),
-    forall((disease(Disease, Symptoms), subset(HPI, Symptoms)), (ask_symptom_disease(Disease), nl)).
+    hpi(HPI), not_hpi(NHPI),
+    forall((disease(Disease, Symptoms), subset(HPI, Symptoms)), 
+        (
+            write('Checking for remaining symptoms of: '), write(Disease), nl,
+            forall((member(Symptom, Symptoms), not(member(Symptom, HPI)), not(member(Symptom, NHPI))), (ask_symptom(Symptom), true)), nl
+        )
+    ).
 
 % Just checks if there is still a possible diagnosis
 has_possible_diagnosis :-
@@ -106,10 +108,9 @@ end :-
     write('Thank you for using the chatbot!').
 
 % HPI Setup
-
-:- dynamic hpi/1, not_hpi/1.
-hpi([]).
-not_hpi([]).
+:- dynamic hpi/1, not_hpi/1. % Dynamic means we can assert/retract facts during runtime
+hpi([]). % Initially, the HPI is empty
+not_hpi([]). % Initially, the NotHPI is empty (for symptoms that the user does not have to avoid questions from being repeated)
 
 %Logs the symptom to the HPI
 log_symptom(Symptom) :-
@@ -176,7 +177,7 @@ symptom(skin, rash).
 symptom(skin, jaundice).
 
 symptom(heent, sore_throat).
-symptom(heent, cough).
+symptom(heent, bad_cough).
 symptom(heent, runny_nose).
 symptom(heent, red_eyes).
 symptom(heent, pain_behind_eye).
@@ -196,34 +197,34 @@ symptom(others, loss_of_taste).
 symptom(others, blood_in_urine).
 symptom(others, dark_urine).
 
-% Questions
+% Symptom Descriptions
 
-question(fever) :- write('Are you experiencing a fever?').
-question(chills) :- write('Are you experiencing chills?').
-question(headache) :- write('Are you experiencing frequent headaches?').
-question(nausea) :- write('Are you experiencing nausea?').
-question(muscle_pain) :- write('Are you experiencing muscle pain?').
-question(fatigue) :- write('Are you experiencing fatigue?').
+desc(fever) :- write('Fever (high body temperature)').
+desc(chills) :- write('Chills (sudden coldness and shivering)').
+desc(headache) :- write('Headache (pain in the head or neck area)').
+desc(nausea) :- write('Nausea (feeling of discomfort in the stomach)').
+desc(muscle_pain) :- write('Muscle pain (soreness or discomfort in the muscles)').
+desc(fatigue) :- write('Fatigue (feeling of tiredness or exhaustion)').
 
-question(rash) :- write('Do you have a rash anywhere on your body?').
-question(jaundice) :- write('Do you have jaundice (yellow discoloration of the skin)?').
+desc(rash) :- write('Rash (abnormal change in the skin, often with redness, itching, or bumps)').
+desc(jaundice) :- write('Jaundice (yellowing of the skin and eyes)').
 
-question(sore_throat) :- write('Do you have a sore throat?').
-question(cough) :- write('Do you have a bad cough?').
-question(runny_nose) :- write('Do you have a runny nose?').
-question(red_eyes) :- write('Do you have red eyes?').
-question(pain_behind_eye) :- write('Do you feel any pain behind your eyes?').
-question(blood_in_heent) :- write('Do you experience nose bleeds or coughing up blood?').
+desc(sore_throat) :- write('Sore throat (pain or discomfort in the throat, often accompanied by difficulty swallowing)').
+desc(bad_cough) :- write('Bad cough (excessive coughing accompanied by phlegm)').
+desc(runny_nose) :- write('Runny nose (excess production of mucus in the nose)').
+desc(red_eyes) :- write('Red eyes (red coloration in the eyes)').
+desc(pain_behind_eye) :- write('Pain behind the eye (headache or discomfort felt around or behind the eye)').
+desc(blood_in_heent) :- write('Bleeding (from the nose or gums)').
 
-question(shortness_of_breath) :- write('Are you frequently experiencing shortness of breath?').
-question(chest_pain) :- write('Are you experiencing any chest pain?').
+desc(shortness_of_breath) :- write('Shortness of breath (difficulty breathing)').
+desc(chest_pain) :- write('Chest pain (discomfort or pressure felt in the chest)').
 
-question(diarrhea) :- write('Are you experiencing diarrhea?').
-question(vomiting) :- write('Are you experiencing vomiting?').
-question(abdominal_pain) :- write('Are you experiencing abdominal pain?').
-question(clay_colored_bowel_movements) :- write('Are your bowel movements clay colored?').
+desc(diarrhea) :- write('Diarrhea (loose or watery bowel movements, often accompanied by abdominal cramping or discomfort)').
+desc(vomiting) :- write('Vomiting (expulsion of stomach contents through the mouth)').
+desc(abdominal_pain) :- write('Abdominal pain (discomfort or pain felt in the abdominal region)').
+desc(clay_colored_bowel_movements) :- write('Clay-colored bowel movements (stools that are pale or grayish in color)').
 
-question(loss_of_smell) :- write('Have you lost your sense of smell?').
-question(loss_of_taste) :- write('Have you lost your sense of taste?').
-question(blood_in_urine) :- write('Have you noticed blood in your urine?').
-question(dark_urine) :- write('Have you noticed your urine turning into a darker color?').
+desc(loss_of_smell) :- write('Loss of smell (reduced ability to detect odors)').
+desc(loss_of_taste) :- write('Loss of taste (reduced ability to detect flavors)').
+desc(blood_in_urine) :- write('Bleeding (presence of blood in the urine)').
+desc(dark_urine) :- write('Dark urine (urine that is darker than usual)').
