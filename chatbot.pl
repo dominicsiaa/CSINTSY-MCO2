@@ -11,10 +11,13 @@ start :-
     ask_specific_symptom_type,
 
     % Diagnosis based on current symptoms (HPI)
-    hpi(HPI),
+    hpi(HPI), nl,
+    write('Based on the information you have provided us, we have the following information:'), nl,
+    forall(member(Symptom, HPI), (write('- '), desc(Symptom), nl)),
+    nl,
     (
         % If not enough info on the symptoms (if the user has no symptoms, or only common sympytoms), end
-        (HPI = []; HPI = [common_symptoms]) -> write('Unfortunately we don\'t have enough information to make an accurate diagnosis, we recommend moving to a larger facility to run some tests'), nl;
+        (HPI = []; not(has_possible_diagnosis)) -> write('Unfortunately we don\'t have enough information to make an accurate diagnosis, we recommend moving to a larger facility to run some tests'), nl;
 
         % Else, move to more specific diagnosis
         write('We will now move on to more specific diagnosis on possible diseases'), nl, nl,
@@ -51,9 +54,13 @@ ask_specific_symptom(SymptomType) :-
 
         % Else ask the symptoms
         write('Please enter the symptom you are experiencing'), nl,
-        forall(symptom(SymptomType, Symptom), (format('[~w] \t', [Symptom]), desc(Symptom), nl)),
+        forall(symptom(SymptomType, Symptom), (format('- [~w] \t', [Symptom]), desc(Symptom), nl)),
+        write('- [other] \tThe symptom you are looking for is not here'), nl,
         read(Symptom),
         (
+            % If user entered other
+            Symptom = other -> write('');
+
             % If the symptom entered is valid, log into HPI
             symptom(SymptomType, Symptom) -> log_symptom(Symptom), nl;
 
@@ -74,11 +81,10 @@ ask_symptom(Symptom) :-
 
 % Check for remaining unasked symptoms of possible diseases
 initial_diagnose_disease :-
-    hpi(HPI), not_hpi(NHPI),
-    forall((disease(Disease, Symptoms), subset(HPI, Symptoms)), 
+    forall((hpi(HPI), disease(Disease, Symptoms), subset(HPI, Symptoms)), 
         (
             write('Checking for remaining symptoms of: '), write(Disease), nl,
-            forall((member(Symptom, Symptoms), not(member(Symptom, HPI)), not(member(Symptom, NHPI))), (ask_symptom(Symptom), true)), nl
+            forall((hpi(HPI2), not_hpi(NHPI2), member(Symptom, Symptoms), not(member(Symptom, HPI2)), not(member(Symptom, NHPI2))), (ask_symptom(Symptom), true)), nl
         )
     ).
 
@@ -86,26 +92,26 @@ initial_diagnose_disease :-
 has_possible_diagnosis :-
     hpi(HPI),
     disease(_, Symptoms),
-    subtract(HPI, [common_symptoms], HPI2),
-    subtract(Symptoms, [common_symptoms], Symptoms2),
-    subset(HPI2, Symptoms2).
+    findall(Symptom, symptom(general, Symptom), GeneralSymptoms),
+    subtract(HPI, GeneralSymptoms, HPI2),
+    subtract(Symptoms, GeneralSymptoms, Symptoms2),
+    subset(HPI2, Symptoms2),
+    nth0(0, HPI2, _). % Checks if the list is not empty
 
 % Based on all the info, diagnose the disease
 final_diagnose_disease :-
     hpi(HPI),
     (
         % If there is a possible diagnosis
-        has_possible_diagnosis -> forall((disease(Disease, Symptoms), subset(HPI, Symptoms)), (write('Possible diagnosis: '), write(Disease), nl));
-        % NEED TO ADD MORE LOGIC TO THIS PART, RN IT JUST CHECKS FOR SUBSET
-        % Maybe check for the most common symptoms in the HPI and see if they match any diseases???
-
+        has_possible_diagnosis -> forall((disease(Disease, Symptoms), subset(HPI, Symptoms)), (write('Possible diagnosis: '), write(Disease), nl))
         % Else
         write('We don\'t have enough information or your symptoms don\'t match any known diseases in our database, we recommend more testing in a larger facility'), nl
     ).
 
 % End
 end :-
-    write('Thank you for using the chatbot!').
+    write('Thank you for using the chatbot!'),
+    true.
 
 % HPI Setup
 :- dynamic hpi/1, not_hpi/1. % Dynamic means we can assert/retract facts during runtime
@@ -115,39 +121,27 @@ not_hpi([]). % Initially, the NotHPI is empty (for symptoms that the user does n
 %Logs the symptom to the HPI
 log_symptom(Symptom) :-
     hpi(HPI),
-    (
-        % If the symptom is a common symptom
-        symptom(general, Symptom) -> (not(member(common_symptoms, HPI)) -> log_symptom(common_symptoms); true);
-
-        % Else
-        not(member(Symptom, HPI)),
-        append(HPI, [Symptom], NewHPI),
-        retract(hpi(HPI)),
-        assert(hpi(NewHPI)),
-        true
-    ).
+    not(member(Symptom, HPI)),
+    append(HPI, [Symptom], NewHPI),
+    retract(hpi(HPI)),
+    assert(hpi(NewHPI)),
+    true.
 
 log_no_symptom(Symptom) :-
     not_hpi(NotHPI),
-    (
-        % If the symptom is a common symptom
-        symptom(general, Symptom) -> (not(member(common_symptoms, NotHPI)) -> log_no_symptom(common_symptoms); true);
-
-        % Else
-        not(member(Symptom, NotHPI)),
-        append(NotHPI, [Symptom], NewNotHPI),
-        retract(not_hpi(NotHPI)),
-        assert(not_hpi(NewNotHPI)),
-        true
-    ).
+    not(member(Symptom, NotHPI)),
+    append(NotHPI, [Symptom], NewNotHPI),
+    retract(not_hpi(NotHPI)),
+    assert(not_hpi(NewNotHPI)),
+    true.
     
 % Diseases
 
 %disease(tuberculosis,).
 %disease(hiv,).
-disease(malaria, [common_symptoms, diarrhea, vomiting]).
-disease(dengue, [common_symptoms, rash, jaundice, pain_behind_eye, blood_in_heent, blood_in_urine]).
-disease(hepatitis, [common_symptoms, dark_urine, jaundice, vomiting, clay_colored_bowel_movements]).
+disease(malaria, [fever, chills, headache, nausea, muscle_pain, fatigue, diarrhea, vomiting]).
+disease(dengue, [fever, chills, headache, nausea, muscle_pain, fatigue, diarrhea, rash, jaundice, pain_behind_eye, blood_in_heent, blood_in_urine]).
+disease(hepatitis, [fever, chills, headache, nausea, muscle_pain, fatigue, diarrhea, dark_urine, jaundice, vomiting, clay_colored_bowel_movements]).
 %disease(pneumonia,).
 %disease(leptospirosis,).
 %disease(typhoid,).
