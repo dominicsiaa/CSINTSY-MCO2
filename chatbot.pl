@@ -168,63 +168,96 @@ type(others).
 
 symptom(general, fever).
 symptom(general, chills).
-symptom(general, headache).
+symptom(general, weakness_fatigue).
 symptom(general, nausea).
-symptom(general, muscle_pain).
-symptom(general, fatigue).
+symptom(general, muscle_body_pain).
+symptom(general, sweats).
+symptom(general, weight_loss).
+symptom(general, loss_of_apetite).
+symptom(general, malaise).
+symptom(general, other_symptom)
 
 symptom(skin, rash).
 symptom(skin, jaundice).
+symptom(skin, other_symptom)
 
-symptom(heent, sore_throat).
-symptom(heent, bad_cough).
-symptom(heent, runny_nose).
+symptom(heent, headache).
+symptom(heent, confusion).
 symptom(heent, red_eyes).
+symptom(heent, jaundice).
 symptom(heent, pain_behind_eye).
+symptom(heent, cough).
+symptom(heent, cough_blood_sputum).
 symptom(heent, blood_in_heent).
+symptom(heent, sore_throat).
+symptom(heent, runny_stuffy_nose).
+symptom(heent, dehydration).
+symptom(heent, loss_of_taste_smell).
+symptom(heent, other_symptom)
 
-symptom(pulmonary, cough).
-symptom(pulmonary, shortness_of_breath).
 symptom(pulmonary, chest_pain).
+symptom(pulmonary, shortness_of_breath).
+symptom(pulmonary, rapid_breathing).
+symptom(pulmonary, other_symptom)
 
 symptom(gastrointestinal, diarrhea).
+symptom(gastrointestinal, profuse_watery_diarrhea).
+symptom(gastrointestinal, constipation).
 symptom(gastrointestinal, vomiting).
 symptom(gastrointestinal, abdominal_pain).
 symptom(gastrointestinal, clay_colored_bowel_movements).
+symptom(gastrointestinal, other_symptom)
 
-symptom(others, loss_of_smell).
-symptom(others, loss_of_taste).
 symptom(others, blood_in_urine).
 symptom(others, dark_urine).
+symptom(others, irritability).
+symptom(others, leg_cramps).
+symptom(others, other_symptom)
 
-% Symptom Descriptions
-
+% General Symptoms
 desc(fever) :- write('Fever (high body temperature)').
-desc(chills) :- write('Chills (sudden coldness and shivering)').
-desc(headache) :- write('Headache (pain in the head or neck area)').
-desc(nausea) :- write('Nausea (feeling of discomfort in the stomach)').
-desc(muscle_pain) :- write('Muscle pain (soreness or discomfort in the muscles)').
-desc(fatigue) :- write('Fatigue (feeling of tiredness or exhaustion)').
+desc(chills) :- write('Chills (shivering or feeling cold despite a fever)').
+desc(weakness_fatigue) :- write('Weakness or fatigue (feeling tired and having low energy levels)').
+desc(nausea) :- write('Nausea (feeling like you need to vomit)').
+desc(muscle_body_pain) :- write('Muscle or body pain (aching muscles or general discomfort throughout the body)').
+desc(sweats) :- write('Sweats (sudden sweating)').
+desc(weight_loss) :- write('Weight loss (unintentional lost of weight)').
+desc(loss_of_apetite) :- write('Loss of appetite (decreased desire to eat)').
+desc(malaise) :- write('Malaise (general feeling of discomfort or unease)').
+desc(other_symptom) :- write('Other symptoms (symptoms not listed above)').
 
-desc(rash) :- write('Rash (abnormal change in the skin, often with redness, itching, or bumps)').
-desc(jaundice) :- write('Jaundice (yellowing of the skin and eyes)').
+% Skin Symptoms
+desc(rash) :- write('Rash (abnormal change in the color or texture of the skin)').
+desc(jaundice) :- write('Jaundice (yellowing of the skin or whites of the eyes)').
 
-desc(sore_throat) :- write('Sore throat (pain or discomfort in the throat, often accompanied by difficulty swallowing)').
-desc(bad_cough) :- write('Bad cough (excessive coughing accompanied by phlegm)').
-desc(runny_nose) :- write('Runny nose (excess production of mucus in the nose)').
-desc(red_eyes) :- write('Red eyes (red coloration in the eyes)').
-desc(pain_behind_eye) :- write('Pain behind the eye (headache or discomfort felt around or behind the eye)').
-desc(blood_in_heent) :- write('Bleeding (from the nose or gums)').
+% Head, Eyes, Ears, Nose, and Throat (HEENT) Symptoms
+desc(headache) :- write('Headache (pain or pressure in the head)').
+desc(confusion) :- write('Confusion (difficulty thinking or understanding)').
+desc(red_eyes) :- write('Red eyes (bloodshot or irritated eyes)').
+desc(pain_behind_eye) :- write('Pain behind the eyes (pain or discomfort felt behind the eyes)').
+desc(cough) :- write('Cough (sudden, forceful expulsion of air from the lungs)').
+desc(cough_blood_sputum) :- write('Cough with blood or sputum (coughing up blood or phlegm)').
+desc(blood_in_heent) :- write('Blood in HEENT (bleeding from the nose, mouth, or throat)').
+desc(sore_throat) :- write('Sore throat (pain, scratchiness or irritation of the throat)').
+desc(runny_stuffy_nose) :- write('Runny or stuffy nose (nasal congestion or discharge)').
+desc(dehydration) :- write('Dehydration (excessive loss of fluids and electrolytes)').
+desc(loss_of_taste_smell) :- write('Loss of taste or smell (partial or complete loss of taste or smell)').
 
-desc(shortness_of_breath) :- write('Shortness of breath (difficulty breathing)').
-desc(chest_pain) :- write('Chest pain (discomfort or pressure felt in the chest)').
+% Pulmonary Symptoms
+desc(chest_pain) :- write('Chest pain (pain, pressure or discomfort in the chest)').
+desc(shortness_of_breath) :- write('Shortness of breath (difficulty breathing or feeling like you cannot get enough air)').
+desc(rapid_breathing) :- write('Rapid breathing (breathing faster than normal)').
 
-desc(diarrhea) :- write('Diarrhea (loose or watery bowel movements, often accompanied by abdominal cramping or discomfort)').
-desc(vomiting) :- write('Vomiting (expulsion of stomach contents through the mouth)').
-desc(abdominal_pain) :- write('Abdominal pain (discomfort or pain felt in the abdominal region)').
-desc(clay_colored_bowel_movements) :- write('Clay-colored bowel movements (stools that are pale or grayish in color)').
+% Gastrointestinal Symptoms
+ddesc(diarrhea) :- write('Diarrhea (frequent loose, watery bowel movements)').
+desc(profuse_watery_diarrhea) :- write('Profuse watery diarrhea (uncontrollable diarrhea that can quickly lead to severe dehydration)').
+desc(constipation) :- write('Constipation (difficulty passing stools or infrequent bowel movements)').
+desc(vomiting) :- write('Vomiting (forceful expulsion of stomach contents through the mouth)').
+desc(abdominal_pain) :- write('Abdominal pain (pain or discomfort in the area between the chest and pelvis)').
+desc(clay_colored_bowel_movements) :- write('Clay-colored bowel movements (stool that is pale or grayish in color)').
 
-desc(loss_of_smell) :- write('Loss of smell (reduced ability to detect odors)').
-desc(loss_of_taste) :- write('Loss of taste (reduced ability to detect flavors)').
-desc(blood_in_urine) :- write('Bleeding (presence of blood in the urine)').
-desc(dark_urine) :- write('Dark urine (urine that is darker than usual)').
+%Other Symptomps
+desc(blood_in_urine) :- write('Blood in urine (hematuria, pink, red, or brown urine)').
+desc(dark_urine) :- write('Dark urine (urine that is darker than usual, such as brown, amber, or tea-colored urine)').
+desc(irritability) :- write('Irritability (a tendency to become easily annoyed or agitated)').
+desc(leg_cramps) :- write('Leg cramps (sudden and involuntary contractions of muscles in the legs)').
