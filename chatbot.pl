@@ -193,7 +193,7 @@ symptom(heent, sore_throat).
 symptom(heent, runny_stuffy_nose).
 symptom(heent, dehydration).
 symptom(heent, loss_of_taste_smell).
-symptom(heent, other_symptom)
+symptom(heent, other_symptom).
 
 symptom(pulmonary, chest_pain).
 symptom(pulmonary, shortness_of_breath).
