@@ -249,7 +249,7 @@ desc(shortness_of_breath) :- write('Shortness of breath (difficulty breathing or
 desc(rapid_breathing) :- write('Rapid breathing (breathing faster than normal)').
 
 % Gastrointestinal Symptoms
-ddesc(diarrhea) :- write('Diarrhea (frequent loose, watery bowel movements)').
+desc(diarrhea) :- write('Diarrhea (frequent loose, watery bowel movements)').
 desc(profuse_watery_diarrhea) :- write('Profuse watery diarrhea (uncontrollable diarrhea that can quickly lead to severe dehydration)').
 desc(constipation) :- write('Constipation (difficulty passing stools or infrequent bowel movements)').
 desc(vomiting) :- write('Vomiting (forceful expulsion of stomach contents through the mouth)').
