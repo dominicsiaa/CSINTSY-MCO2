@@ -137,17 +137,26 @@ log_no_symptom(Symptom) :-
     
 % Diseases
 
-%disease(tuberculosis,).
-%disease(hiv,).
-disease(malaria, [fever, chills, headache, nausea, muscle_pain, fatigue, diarrhea, vomiting]).
-disease(dengue, [fever, chills, headache, nausea, muscle_pain, fatigue, diarrhea, rash, jaundice, pain_behind_eye, blood_in_heent, blood_in_urine]).
-disease(hepatitis, [fever, chills, headache, nausea, muscle_pain, fatigue, diarrhea, dark_urine, jaundice, vomiting, clay_colored_bowel_movements]).
-%disease(pneumonia,).
-%disease(leptospirosis,).
-%disease(typhoid,).
-%disease(influenza,).
-%disease(cholera,).
-%disease(covid,).
+disease(tuberculosis, [fever, chills, weakness_fatigue, sweats, weight_loss, loss_of_apetite, cough, cough_blood_sputum, chest_pain, vomiting, abdominal_pain]).
+
+disease(malaria, [fever, chills, weakness_fatigue, nausea, muscle_body_pain, sweats, malaise, jaundice, headache, diarrhea, vomiting]).
+
+disease(dengue, [fever, nausea, muscle_body_pain, rash, jaundice, pain_behind_eye, blood_in_heent, blood_in_urine]).
+
+disease(hepatitis, [fever, weakness_fatigue, nausea, abdominal_pain, dark_urine, jaundice, vomiting, clay_colored_bowel_movements]).
+
+disease(pneumonia,[fever, chills, weakness_fatigue, nausea, headache, confusion, cough, chest_pain, rapid_breathing, vomiting]).
+
+disease(leptospirosis, [fever, chills, muslce_body_pain, rash, jaundice, headache, red_eyes, diarrhea, vomiting, abdominal_pain]).
+
+disease(typhoid,[fever, weakness_fatigue, loss_of_apetite, headache, cough, diarrhea, profuse_water_diarrhea]).
+
+disease(influenza,[fever, chills, weakness_fatigue, muscle_body_pain, headache, cough,  sore_throat, runny_stuffy_nose, shortness_of_breath, diarrhea, vomiting]).
+
+disease(cholera,[dehydration, vomiting, leg_crapmps, dark_urine]).
+
+disease(covid,[fever, chills, weakness_fatigue, nausea, muscle_body_pain, headache, cough, sore_throat, runny_stuffy_nose, loss_of_smell]).
+
 
 % Types
 
