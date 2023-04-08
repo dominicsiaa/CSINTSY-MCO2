@@ -175,11 +175,11 @@ symptom(general, sweats).
 symptom(general, weight_loss).
 symptom(general, loss_of_apetite).
 symptom(general, malaise).
-symptom(general, other_symptom)
+symptom(general, other_symptom).
 
 symptom(skin, rash).
 symptom(skin, jaundice).
-symptom(skin, other_symptom)
+symptom(skin, other_symptom).
 
 symptom(heent, headache).
 symptom(heent, confusion).
@@ -198,7 +198,7 @@ symptom(heent, other_symptom)
 symptom(pulmonary, chest_pain).
 symptom(pulmonary, shortness_of_breath).
 symptom(pulmonary, rapid_breathing).
-symptom(pulmonary, other_symptom)
+symptom(pulmonary, other_symptom).
 
 symptom(gastrointestinal, diarrhea).
 symptom(gastrointestinal, profuse_watery_diarrhea).
@@ -206,13 +206,13 @@ symptom(gastrointestinal, constipation).
 symptom(gastrointestinal, vomiting).
 symptom(gastrointestinal, abdominal_pain).
 symptom(gastrointestinal, clay_colored_bowel_movements).
-symptom(gastrointestinal, other_symptom)
+symptom(gastrointestinal, other_symptom).
 
 symptom(others, blood_in_urine).
 symptom(others, dark_urine).
 symptom(others, irritability).
 symptom(others, leg_cramps).
-symptom(others, other_symptom)
+symptom(others, other_symptom).
 
 % General Symptoms
 desc(fever) :- write('Fever (high body temperature)').
