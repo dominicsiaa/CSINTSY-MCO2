@@ -139,23 +139,23 @@ log_no_symptom(Symptom) :-
 
 disease(tuberculosis, [fever, chills, weakness_fatigue, sweats, weight_loss, loss_of_apetite, cough, cough_blood_sputum, chest_pain, vomiting, abdominal_pain]).
 
-disease(malaria, [fever, chills, weakness_fatigue, nausea, muscle_body_pain, sweats, malaise, jaundice, headache, diarrhea, vomiting]).
+disease(malaria, [fever, chills, weakness_fatigue, nausea, muscle_body_pain, sweats, malaise, jaundice, headache, vomiting]).
 
-disease(dengue, [fever, nausea, muscle_body_pain, rash, jaundice, pain_behind_eye, blood_in_heent, blood_in_urine]).
+disease(dengue, [fever, nausea, muscle_body_pain, rash, headache, pain_behind_eye, blood_in_heent, blood_in_urine]).
 
-disease(hepatitis, [fever, weakness_fatigue, nausea, abdominal_pain, dark_urine, jaundice, vomiting, clay_colored_bowel_movements]).
+disease(hepatitisB, [fever, weakness_fatigue, nausea, loss_of_apetite, jaundice, vomiting, abdominal_pain, clay_colored_bowel_movements, dark_urine]).
 
 disease(pneumonia,[fever, chills, weakness_fatigue, nausea, headache, confusion, cough, chest_pain, rapid_breathing, vomiting]).
 
 disease(leptospirosis, [fever, chills, muslce_body_pain, rash, jaundice, headache, red_eyes, diarrhea, vomiting, abdominal_pain]).
 
-disease(typhoid,[fever, weakness_fatigue, loss_of_apetite, headache, cough, diarrhea, profuse_water_diarrhea]).
+disease(typhoid,[fever, weakness_fatigue, loss_of_apetite, headache, cough, diarrhea, constipation]).
 
 disease(influenza,[fever, chills, weakness_fatigue, muscle_body_pain, headache, cough,  sore_throat, runny_stuffy_nose, shortness_of_breath, diarrhea, vomiting]).
 
-disease(cholera,[dehydration, vomiting, leg_crapmps, dark_urine]).
+disease(cholera,[dehydration, diarrhea, profuse_watery_diarrhea, vomiting, irritability, leg_cramps]).
 
-disease(covid,[fever, chills, weakness_fatigue, nausea, muscle_body_pain, headache, cough, sore_throat, runny_stuffy_nose, loss_of_smell]).
+disease(covid,[fever, chills, weakness_fatigue, nausea, muscle_body_pain, headache, cough, sore_throat, runny_stuffy_nose, loss_of_taste_smell, shortness_of_breath, diarrhea, vomiting]).
 
 
 % Types
@@ -178,11 +178,9 @@ symptom(general, sweats).
 symptom(general, weight_loss).
 symptom(general, loss_of_apetite).
 symptom(general, malaise).
-symptom(general, other_symptom).
 
 symptom(skin, rash).
 symptom(skin, jaundice).
-symptom(skin, other_symptom).
 
 symptom(heent, headache).
 symptom(heent, confusion).
@@ -196,12 +194,12 @@ symptom(heent, sore_throat).
 symptom(heent, runny_stuffy_nose).
 symptom(heent, dehydration).
 symptom(heent, loss_of_taste_smell).
-symptom(heent, other_symptom).
 
+symptom(pulmonary, cough).
+symptom(heent, cough_blood_sputum).
 symptom(pulmonary, chest_pain).
 symptom(pulmonary, shortness_of_breath).
 symptom(pulmonary, rapid_breathing).
-symptom(pulmonary, other_symptom).
 
 symptom(gastrointestinal, diarrhea).
 symptom(gastrointestinal, profuse_watery_diarrhea).
@@ -209,13 +207,11 @@ symptom(gastrointestinal, constipation).
 symptom(gastrointestinal, vomiting).
 symptom(gastrointestinal, abdominal_pain).
 symptom(gastrointestinal, clay_colored_bowel_movements).
-symptom(gastrointestinal, other_symptom).
 
 symptom(others, blood_in_urine).
 symptom(others, dark_urine).
 symptom(others, irritability).
 symptom(others, leg_cramps).
-symptom(others, other_symptom).
 
 % General Symptoms
 desc(fever) :- write('Fever (high body temperature)').
