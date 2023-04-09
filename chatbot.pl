@@ -101,11 +101,10 @@ has_possible_diagnosis :-
 % Based on all the info, diagnose the disease
 final_diagnose_disease :-
     hpi(HPI),
-    (
-        % If there is a possible diagnosis
-        has_possible_diagnosis -> forall((disease(Disease, Symptoms), subset(HPI, Symptoms)), (write('Possible diagnosis: '), write(Disease), nl)),
-        % Else
-        write('We don\'t have enough information or your symptoms don\'t match any known diseases in our database, we recommend more testing in a larger facility'), nl
+    (has_possible_diagnosis ->
+        (forall((disease(Disease, Symptoms), subset(HPI, Symptoms)), (write('Possible diagnosis: '), write(Disease), nl)))
+        ;
+        (write('We don\'t have enough information or your symptoms don\'t match any known diseases in our database, we recommend more testing in a larger facility'), nl)
     ).
 
 % End
