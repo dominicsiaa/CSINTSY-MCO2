@@ -146,7 +146,7 @@ disease(hepatitisB, [fever, weakness_fatigue, nausea, loss_of_apetite, jaundice,
 
 disease(pneumonia,[fever, chills, weakness_fatigue, nausea, headache, confusion, cough, chest_pain, rapid_breathing, vomiting]).
 
-disease(leptospirosis, [fever, chills, muslce_body_pain, rash, jaundice, headache, red_eyes, diarrhea, vomiting, abdominal_pain]).
+disease(leptospirosis, [fever, chills, muscle_body_pain, rash, jaundice, headache, red_eyes, diarrhea, vomiting, abdominal_pain]).
 
 disease(typhoid,[fever, weakness_fatigue, loss_of_apetite, headache, cough, diarrhea, constipation]).
 
