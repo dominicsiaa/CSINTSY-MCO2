@@ -81,12 +81,17 @@ ask_symptom(Symptom) :-
 
 % Check for remaining unasked symptoms of possible diseases
 initial_diagnose_disease :-
-    forall((hpi(HPI), disease(Disease, Symptoms), subset(HPI, Symptoms)), 
-        (
-            write('Checking for remaining symptoms of: '), write(Disease), nl,
-            forall((hpi(HPI2), not_hpi(NHPI2), member(Symptom, Symptoms), not(member(Symptom, HPI2)), not(member(Symptom, NHPI2))), (ask_symptom(Symptom), true)), nl
-        )
-    ).
+    (   \+ (hpi(HPI), disease(_, Symptoms), subset(HPI, Symptoms)))
+    ->  writeln('We don\'t have enough information or your symptoms don\'t match any known diseases in our database, we recommend more testing in a larger facility')
+    ;   forall((hpi(HPI), disease(Disease, Symptoms), subset(HPI, Symptoms)),
+            (   write('Checking for remaining symptoms of: '), write(Disease), nl,
+                forall((hpi(HPI2), not_hpi(NHPI2), member(Symptom, Symptoms),
+                        not(member(Symptom, HPI2)), not(member(Symptom, NHPI2))),
+                    (ask_symptom(Symptom), true)),
+                nl
+            )
+        ).
+
 
 % Just checks if there is still a possible diagnosis
 has_possible_diagnosis :-
